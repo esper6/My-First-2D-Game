@@ -2,8 +2,8 @@ extends Node
 
 
 export(PackedScene) var mob_scene
-var score
-
+var score: int
+var health := 3
 
 func _ready():
 	randomize()
@@ -23,8 +23,12 @@ func game_over():
 	$Music.stop()
 	$DeathSound.play()
 	
+	
 func new_game():
 	score = 0
+	health = 3
+	$HUD/Health.set_text(str(health))
+	
 	$Player.start($StartPosition.position)
 	$StartTimer.start()
 	
@@ -70,3 +74,12 @@ func _on_MobTimer_timeout():
 	# Spawn the mob by adding it to the Main scene
 	add_child(mob)
 	print(mob)
+
+
+func _on_Player_hit():
+	health -= 1
+	if health <= 0:
+		$HUD/Health.set_text(str(health)) 
+		game_over()
+	else:
+		$HUD/Health.set_text(str(health))

@@ -3,7 +3,7 @@ signal hit
 
 export var speed = 400
 var screen_size
-
+var _invincibility: bool
 
 func _ready():
 	screen_size = get_viewport_rect().size
@@ -45,11 +45,24 @@ func _process(delta):
 		$AnimatedSprite.flip_v = velocity.y > 0
 		
 
+func flash():
+	# code to make player sprite flash
+	var tween = Tween.new()
+	tween.interpolate_property(get_node("Player"), "modulate", Color("white"), Color("red"), 0.1, Tween.TRANS_LINEAR, Tween.EASE_IN_OUT)
+	add_child(tween)
+	tween.start()
+
+func set_invincibility(invincibility):
+	# set invincibility status
+	_invincibility = invincibility
 
 func _on_Player_body_entered(body):
-	hide()
+	#hide()
+	flash()
+	print("flash")
+	set_invincibility(true)
 	emit_signal("hit")
-	$CollisionShape2D.set_deferred("disabled", true)
+	#$CollisionShape2D.set_deferred("disabled", true)
 	
 	
 func start(pos):
